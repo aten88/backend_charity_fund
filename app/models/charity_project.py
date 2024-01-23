@@ -11,5 +11,5 @@ class CharityProject(Base):
     full_amount = Column(Integer, nullable=False)  # больше 0 проверить, можно реализовать через валидатор
     invested_amount = Column(Integer, nullable=False, default=INVESTED_AMOUNT_START)
     fully_invested = Column(Boolean, nullable=False, default=False)
-    create_date = Column(DateTime, nullable=False, default=func.now())
-    close_date = Column(DateTime, nullable=False)  # проставляется автоматически в момент набора нужной суммы нужно сделать
+    create_date = Column(DateTime, nullable=False, server_default=func.now())
+    close_date = Column(DateTime, nullable=True)  # проставляется автоматически в момент набора нужной суммы нужно сделать
