@@ -34,10 +34,16 @@ class CharityProjectCreate(CharityProjectBase):
 
 class CharityProjectDB(CharityProjectBase):
     """Схема получения данных из БД. """
+    name: str = Field(
+        ...,
+        min_length=MIN_LEN_FIELD,
+        max_length=MAX_LEN_FIELD
+    )
+    description: str = Field(..., min_length=MIN_LEN_FIELD)
     id: int
-    invested_amount: Optional[int]
-    fully_invested: Optional[bool]
-    create_date: Optional[datetime]
+    invested_amount: int
+    fully_invested: bool
+    create_date: datetime
     close_date: Optional[datetime]
 
     class Config:
