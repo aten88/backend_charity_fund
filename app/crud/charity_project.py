@@ -8,7 +8,7 @@ from app.models.charity_project import CharityProject
 from app.schemas.charity_project import CharityProjectCreate, CharityProjectUpdate
 
 
-async def create_charity_project(
+async def create_new_charity_project(
         new_project: CharityProjectCreate,
         session: AsyncSession,
 ) -> CharityProject:

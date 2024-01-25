@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
 from app.crud.charity_project import (
-    create_charity_project,
+    create_new_charity_project,
     get_project_id_by_name,
     read_all_projects_from_db,
     get_project_by_id, update_charity_project
@@ -33,7 +33,7 @@ async def create_charity_project(
 ):
     await check_name_duplicate(charity_project.name, session)
 
-    new_project = await create_charity_project(charity_project, session)
+    new_project = await create_new_charity_project(charity_project, session)
     return new_project
 
 
@@ -50,7 +50,7 @@ async def get_all_charity_projects(
 
 
 @router.patch(
-    '/{charity_project_id}',
+    '/{project_id}',
     response_model=CharityProjectDB,
     response_model_exclude_none=True
 )
