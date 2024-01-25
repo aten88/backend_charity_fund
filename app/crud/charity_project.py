@@ -57,7 +57,7 @@ async def get_project_by_id(
     return db_project
 
 
-async def update_charity_project(
+async def partially_update_charity_project(
         db_project: CharityProject,
         project_in: CharityProjectUpdate,
         session: AsyncSession,
@@ -75,7 +75,7 @@ async def update_charity_project(
     return db_project
 
 
-async def delete_charity_project(
+async def remove_charity_project(
         db_project: CharityProject,
         session: AsyncSession,
 ) -> CharityProject:
