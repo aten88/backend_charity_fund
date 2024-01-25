@@ -7,14 +7,15 @@ from app.crud.charity_project import (
     create_new_charity_project,
     get_project_id_by_name,
     read_all_projects_from_db,
-    get_project_by_id, update_charity_project
+    get_project_by_id, update_charity_project,
+    delete_charity_project
 )
 from app.schemas.charity_project import (
     CharityProjectCreate,
     CharityProjectDB,
     CharityProjectUpdate,
 )
-
+from app.models.charity_project import CharityProject
 
 router = APIRouter(
     prefix='/charity_project',
@@ -59,13 +60,8 @@ async def partially_update_charity_project(
     obj_in: CharityProjectUpdate,
     session: AsyncSession = Depends(get_async_session)
 ):
-    charity_project = await get_project_by_id(project_id, session)
-    if charity_project is None:
-        raise HTTPException(
-            status_code=404,
-            detail=' Проект с таким id не найден. '
-        )
-    if obj_in is not None:
+    charity_project = await check_charity_project_exists(project_id, session)
+    if obj_in.name is not None:
         await check_name_duplicate(obj_in.name, session)
 
     charity_project = await update_charity_project(
@@ -85,3 +81,36 @@ async def check_name_duplicate(
             status_code=422,
             detail='Проект с таким именем уже существует!'
         )
+
+
+@router.delete(
+    '/{project_id}',
+    response_model=CharityProjectDB,
+    response_model_exclude_none=True,
+)
+async def remove_charity_project(
+        project_id: int,
+        session: AsyncSession = Depends(get_async_session),
+):
+    charity_project = await check_charity_project_exists(
+        project_id, session
+    )
+    charity_project = await delete_charity_project(
+        charity_project, session
+    )
+    return charity_project
+
+
+async def check_charity_project_exists(
+        project_id: int,
+        session: AsyncSession,
+) -> CharityProject:
+    charity_project = await get_project_by_id(
+        project_id, session
+    )
+    if charity_project is None:
+        raise HTTPException(
+            status_code=404,
+            detail='Переговорка не найдена!'
+        )
+    return charity_project
