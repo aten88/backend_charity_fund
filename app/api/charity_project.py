@@ -32,6 +32,7 @@ async def create_charity_project(
     charity_project: CharityProjectCreate,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """ Метод создания проекта. """
     await check_name_duplicate(charity_project.name, session)
 
     new_project = await create_new_charity_project(charity_project, session)
@@ -46,6 +47,7 @@ async def create_charity_project(
 async def get_all_charity_projects(
     session: AsyncSession = Depends(get_async_session),
 ):
+    """ Метод получения списка проектов. """
     all_projects = await read_all_projects_from_db(session)
     return all_projects
 
@@ -60,6 +62,7 @@ async def update_charity_project(
     obj_in: CharityProjectUpdate,
     session: AsyncSession = Depends(get_async_session)
 ):
+    """ Метод обновления проекта. """
     charity_project = await check_charity_project_exists(project_id, session)
     if obj_in.name is not None:
         await check_name_duplicate(obj_in.name, session)
@@ -68,19 +71,6 @@ async def update_charity_project(
         charity_project, obj_in, session
     )
     return charity_project
-
-
-async def check_name_duplicate(
-    project_name: str,
-    session: AsyncSession,
-) -> None:
-    """ Метод-корутина для проверки имени проекта на дубликаты. """
-    project_id = await get_project_id_by_name(project_name, session)
-    if project_id is not None:
-        raise HTTPException(
-            status_code=422,
-            detail='Проект с таким именем уже существует!'
-        )
 
 
 @router.delete(
@@ -92,6 +82,7 @@ async def delete_charity_project(
         project_id: int,
         session: AsyncSession = Depends(get_async_session),
 ):
+    """ Метод удаления проекта. """
     charity_project = await check_charity_project_exists(
         project_id, session
     )
@@ -101,10 +92,24 @@ async def delete_charity_project(
     return charity_project
 
 
+async def check_name_duplicate(
+    project_name: str,
+    session: AsyncSession,
+) -> None:
+    """ Метод для проверки имени проекта на дубликаты. """
+    project_id = await get_project_id_by_name(project_name, session)
+    if project_id is not None:
+        raise HTTPException(
+            status_code=422,
+            detail='Проект с таким именем уже существует!'
+        )
+
+
 async def check_charity_project_exists(
         project_id: int,
         session: AsyncSession,
 ) -> CharityProject:
+    """ Метод проверки на наличие объекта в БД. """
     charity_project = await get_project_by_id(
         project_id, session
     )

@@ -12,7 +12,7 @@ async def create_new_charity_project(
         new_project: CharityProjectCreate,
         session: AsyncSession,
 ) -> CharityProject:
-    """ Метод-корутина для создания обьекта CharityProject. """
+    """ Метод для создания обьекта CharityProject. """
     new_project_data = new_project.dict()
     db_project = CharityProject(**new_project_data)
     session.add(db_project)
@@ -25,7 +25,7 @@ async def get_project_id_by_name(
         project_name: str,
         session: AsyncSession,
 ) -> Optional[int]:
-    """ Метод-корутина для поиска id обьекта по имени. """
+    """ Метод для поиска id обьекта по имени. """
     db_project_id = await session.execute(
         select(CharityProject.id).where(
             CharityProject.name == project_name
@@ -38,7 +38,7 @@ async def get_project_id_by_name(
 async def read_all_projects_from_db(
         session: AsyncSession,
 ) -> list[CharityProject]:
-    """ Метод-корутина для получения списка проектов. """
+    """ Метод для получения списка проектов. """
     db_projects = await session.execute(select(CharityProject))
     return db_projects.scalars().all()
 
@@ -47,7 +47,7 @@ async def get_project_by_id(
         project_id: int,
         session: AsyncSession,
 ) -> Optional[CharityProject]:
-    """ Метод-корутина для получения проектов по id. """
+    """ Метод для получения проектов по id. """
     db_project = await session.execute(
         select(CharityProject).where(
             CharityProject.id == project_id
@@ -62,7 +62,7 @@ async def partially_update_charity_project(
         project_in: CharityProjectUpdate,
         session: AsyncSession,
 ) -> CharityProject:
-    """ Метод-корутина для обновления объектов CharityProject. """
+    """ Метод для обновления объектов CharityProject. """
     obj_data = jsonable_encoder(db_project)
     update_data = project_in.dict(exclude_unset=True)
 
@@ -79,6 +79,7 @@ async def remove_charity_project(
         db_project: CharityProject,
         session: AsyncSession,
 ) -> CharityProject:
+    """ Метод для удаления объектов из БД. """
     await session.delete(db_project)
     await session.commit()
     return db_project

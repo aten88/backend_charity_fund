@@ -6,7 +6,7 @@ from app.core.config import settings
 
 
 class PreBase:
-    """ Класс предустановок БД. """
+    """ Класс-основа для других классов. """
     @declared_attr
     def __tablename__(cls):
         """ Метод для именования таблицы. """

@@ -7,7 +7,7 @@ from app.core.constants import MIN_LEN_FIELD, MAX_LEN_FIELD
 
 
 class CharityProjectBase(BaseModel):
-    """ Основа для других схем. """
+    """ Основа для схем проекта. """
     name: str = Field(
         None,
         min_length=MIN_LEN_FIELD,
@@ -56,7 +56,7 @@ class CharityProjectUpdate(CharityProjectBase):
 
     @validator('name')
     def name_cannot_be_null(cls, value):
-        """ Валидатор проверки поля name. """
+        """ Валидатор поля name. """
         if value is None:
             raise ValueError('Имя проекта не может быть пустым.')
         return value
