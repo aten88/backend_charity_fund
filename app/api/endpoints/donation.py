@@ -11,9 +11,7 @@ from app.schemas.donation import (
 )
 # from app.models.donation import Donation
 
-router = APIRouter(
-    prefix='/donation',
-    tags=['donations'])
+router = APIRouter()
 
 
 @router.post(

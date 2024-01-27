@@ -11,9 +11,7 @@ from app.schemas.charity_project import (
 )
 from app.models.charity_project import CharityProject
 
-router = APIRouter(
-    prefix='/charity_project',
-    tags=['сharity projects'])
+router = APIRouter()
 
 
 @router.post(
