@@ -14,7 +14,7 @@ class DonationBase(BaseModel):
 
 class DonationCreate(DonationBase):
     """ Схема для создания пожертвования. """
-    comment: str = Field(..., min_length=MIN_LEN_FIELD)
+    comment: str = Optional[Field(..., min_length=MIN_LEN_FIELD)]
 
 
 class DonationDB(DonationBase):
@@ -33,6 +33,6 @@ class DonationDB(DonationBase):
 
 class DonationUserDB(DonationBase):
     """ Схема для получения пожертвования юзера из БД. """
-    comment: str = Field(..., min_length=MIN_LEN_FIELD)
+    comment: str = Optional[Field(..., min_length=MIN_LEN_FIELD)]
     id: int
     create_date: datetime

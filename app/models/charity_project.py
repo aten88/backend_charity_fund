@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import Column, String, Text, Integer, Boolean, DateTime
-# from sqlalchemy.orm import relationship
 
 from app.core.constants import INVESTED_AMOUNT_START
 from app.core.db import Base
@@ -16,4 +15,3 @@ class CharityProject(Base):
     fully_invested = Column(Boolean, nullable=False, default=False)
     create_date = Column(DateTime, default=datetime.now(timezone.utc))
     close_date = Column(DateTime)  # проставляется автоматически в момент набора нужной суммы нужно сделать
-    # donations = relationship('Donation')

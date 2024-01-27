@@ -1,8 +1,9 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import (
-    Column, Text,
-    Integer, Boolean, DateTime,
+    Column, Text, Integer,
+    Boolean, DateTime,
+    # ForeignKey,
 )
 
 from app.core.db import Base
@@ -10,6 +11,7 @@ from app.core.db import Base
 
 class Donation(Base):
     """ Модель пожертвований. """
+    # user_id = Column(Integer, ForeignKey('user.id')) пока в комментах т.к вызовет ошибку юзер не определен...
     comment = Column(Text, nullable=True)
     full_amount = Column(Integer, nullable=False)
     invested_amount = Column(Integer, default=0)
