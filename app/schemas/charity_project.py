@@ -47,6 +47,7 @@ class CharityProjectDB(CharityProjectBase):
 
 class CharityProjectUpdate(CharityProjectBase):
     """ Схема для обновления обьекта CharityProject. """
+    full_amount: Optional[PositiveInt]
 
     @validator('name')
     def name_cannot_be_null(cls, value):

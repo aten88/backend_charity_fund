@@ -13,7 +13,7 @@ from app.schemas.donation import (
 
 router = APIRouter(
     prefix='/donation',
-    tags=['Donation'])
+    tags=['donations'])
 
 
 @router.post(

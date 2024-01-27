@@ -13,7 +13,7 @@ from app.models.charity_project import CharityProject
 
 router = APIRouter(
     prefix='/charity_project',
-    tags=['Charity Project'])
+    tags=['сharity projects'])
 
 
 @router.post(
