@@ -3,13 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
-from app.crud.charity_project import (
-    create_new_charity_project,
-    get_project_id_by_name,
-    read_all_projects_from_db,
-    get_project_by_id, partially_update_charity_project,
-    remove_charity_project,
-)
+from app.crud.charity_project import project_crud
 from app.schemas.charity_project import (
     CharityProjectCreate,
     CharityProjectDB,
@@ -35,7 +29,7 @@ async def create_charity_project(
     """ Метод создания проекта. """
     await check_name_duplicate(charity_project.name, session)
 
-    new_project = await create_new_charity_project(charity_project, session)
+    new_project = await project_crud.create(charity_project, session)
     return new_project
 
 
@@ -48,7 +42,7 @@ async def get_all_charity_projects(
     session: AsyncSession = Depends(get_async_session),
 ):
     """ Метод получения списка проектов. """
-    all_projects = await read_all_projects_from_db(session)
+    all_projects = await project_crud.get_multi(session)
     return all_projects
 
 
@@ -67,7 +61,7 @@ async def update_charity_project(
     if obj_in.name is not None:
         await check_name_duplicate(obj_in.name, session)
 
-    charity_project = await partially_update_charity_project(
+    charity_project = await project_crud.update(
         charity_project, obj_in, session
     )
     return charity_project
@@ -86,7 +80,7 @@ async def delete_charity_project(
     charity_project = await check_charity_project_exists(
         project_id, session
     )
-    charity_project = await remove_charity_project(
+    charity_project = await project_crud.remove(
         charity_project, session
     )
     return charity_project
@@ -97,7 +91,7 @@ async def check_name_duplicate(
     session: AsyncSession,
 ) -> None:
     """ Метод для проверки имени проекта на дубликаты. """
-    project_id = await get_project_id_by_name(project_name, session)
+    project_id = await project_crud.get_project_id_by_name(project_name, session)
     if project_id is not None:
         raise HTTPException(
             status_code=422,
@@ -110,7 +104,7 @@ async def check_charity_project_exists(
         session: AsyncSession,
 ) -> CharityProject:
     """ Метод проверки на наличие объекта в БД. """
-    charity_project = await get_project_by_id(
+    charity_project = await project_crud.get(
         project_id, session
     )
     if charity_project is None:
