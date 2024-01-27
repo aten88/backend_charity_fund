@@ -9,12 +9,12 @@ from app.core.constants import MIN_LEN_FIELD
 class DonationBase(BaseModel):
     """ Основа для схем пожертвования. """
     full_amount: PositiveInt
-    comment: str = Optional[Field(None, min_length=MIN_LEN_FIELD)]
+    comment: Optional[str] = Field(None, min_length=MIN_LEN_FIELD)
 
 
 class DonationCreate(DonationBase):
     """ Схема для создания пожертвования. """
-    comment: str = Optional[Field(..., min_length=MIN_LEN_FIELD)]
+    comment: Optional[str] = Field(..., min_length=MIN_LEN_FIELD)
 
 
 class DonationDB(DonationBase):
@@ -22,10 +22,10 @@ class DonationDB(DonationBase):
     comment: str = Field(..., min_length=MIN_LEN_FIELD)
     id: int
     create_date: datetime
-    user_id: str
+    user_id: Optional[str]
     invested_amount: int
     fully_invested: bool
-    close_date: datetime
+    close_date: Optional[datetime]
 
     class Config:
         orm_mode = True
@@ -33,6 +33,6 @@ class DonationDB(DonationBase):
 
 class DonationUserDB(DonationBase):
     """ Схема для получения пожертвования юзера из БД. """
-    comment: str = Optional[Field(..., min_length=MIN_LEN_FIELD)]
+    comment: str = Field(..., min_length=MIN_LEN_FIELD)
     id: int
     create_date: datetime
