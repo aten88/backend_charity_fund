@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, PositiveInt, validator
 
 from app.core.constants import MIN_LEN_FIELD, MAX_LEN_FIELD
 
@@ -14,13 +14,7 @@ class CharityProjectBase(BaseModel):
         max_length=MAX_LEN_FIELD
     )
     description: str = Field(None, min_length=MIN_LEN_FIELD)
-    full_amount: int
-
-    @validator('full_amount')
-    def check_full_amount(cls, value):
-        if value <= 0:
-            raise ValueError('Поле full_amount должно быть больше 0')
-        return value
+    full_amount: PositiveInt
 
 
 class CharityProjectCreate(CharityProjectBase):

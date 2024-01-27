@@ -1,26 +1,20 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, PositiveInt
 
 from app.core.constants import MIN_LEN_FIELD
 
 
 class DonationBase(BaseModel):
     """ Основа для схем пожертвования. """
-    full_amount: int
+    full_amount: PositiveInt
     comment: str = Optional[Field(None, min_length=MIN_LEN_FIELD)]
-
-    @validator('full_amount')
-    def check_full_amount(cls, value):
-        if value <= 0:
-            raise ValueError('Поле full_amount должно быть больше 0')
-        return value
 
 
 class DonationCreate(DonationBase):
     """ Схема для создания пожертвования. """
-    pass
+    comment: str = Field(..., min_length=MIN_LEN_FIELD)
 
 
 class DonationDB(DonationBase):
@@ -42,6 +36,3 @@ class DonationUserDB(DonationBase):
     comment: str = Field(..., min_length=MIN_LEN_FIELD)
     id: int
     create_date: datetime
-
-    class Config:
-        orm_mode = True
