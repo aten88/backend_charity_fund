@@ -22,7 +22,7 @@ class DonationDB(DonationBase):
     comment: Optional[str]
     id: int
     create_date: datetime
-    user_id: str
+    # user_id: str # временно закомментил
     invested_amount: int
     fully_invested: bool
     close_date: Optional[datetime]
