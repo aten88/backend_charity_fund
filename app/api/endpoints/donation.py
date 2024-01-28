@@ -7,7 +7,7 @@ from app.crud.donation import donation_crud
 from app.schemas.donation import (
     DonationCreate,
     DonationDB,
-    DonationUserDB,
+    # DonationUserDB,
 )
 # from app.models.donation import Donation
 
@@ -45,12 +45,13 @@ async def get_all_donations(
 
 @router.get(
     '/my',
-    response_model=list[DonationUserDB],
-    response_model_exclude_none=True,
+    # response_model=list[DonationUserDB],
+    # response_model_exclude_none=True,
 )
 async def get_user_donations(
+    user_id: int,
     session: AsyncSession = Depends(get_async_session),
 ):
     """ Метод получения списка донатов. """
-    all_donations = await donation_crud.get_donations_by_user(session)
+    all_donations = await donation_crud.get_donations_by_user(user_id, session)
     return all_donations

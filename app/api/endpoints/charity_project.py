@@ -24,7 +24,9 @@ async def create_charity_project(
     charity_project: CharityProjectCreate,
     session: AsyncSession = Depends(get_async_session),
 ):
-    """ Метод создания проекта. """
+    """ Только для суперюзеров.
+
+        Создает благотворительный проект."""
     await check_name_duplicate(charity_project.name, session)
 
     new_project = await project_crud.create(charity_project, session)
@@ -39,7 +41,7 @@ async def create_charity_project(
 async def get_all_charity_projects(
     session: AsyncSession = Depends(get_async_session),
 ):
-    """ Метод получения списка проектов. """
+    """ Получает список всех проектов. """
     all_projects = await project_crud.get_multi(session)
     return all_projects
 
@@ -54,7 +56,9 @@ async def update_charity_project(
     obj_in: CharityProjectUpdate,
     session: AsyncSession = Depends(get_async_session)
 ):
-    """ Метод обновления проекта. """
+    """ Только для суперюзеров.
+
+        Закрытый проект нельзя редактировать, также нельзя установить требуемую сумму меньше уже вложенной. """
     charity_project = await check_charity_project_exists(project_id, session)
     if obj_in.name is not None:
         await check_name_duplicate(obj_in.name, session)
@@ -74,7 +78,9 @@ async def delete_charity_project(
         project_id: int,
         session: AsyncSession = Depends(get_async_session),
 ):
-    """ Метод удаления проекта. """
+    """ Только для суперюзеров.
+
+        Удаляет проект. Нельзя удалить проект, в который уже были инвестированы средства, его можно только закрыть. """
     charity_project = await check_charity_project_exists(
         project_id, session
     )
