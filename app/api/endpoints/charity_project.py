@@ -10,6 +10,7 @@ from app.schemas.charity_project import (
     CharityProjectUpdate,
 )
 from app.api.validators import check_name_duplicate, check_charity_project_exists
+from app.services.investments_service import get_free_donations, investing_process
 
 router = APIRouter()
 
@@ -30,6 +31,11 @@ async def create_charity_project(
     await check_name_duplicate(charity_project.name, session)
 
     new_project = await project_crud.create(charity_project, session)
+
+    all_free_donations = await get_free_donations(session)
+    if all_free_donations:
+        await investing_process(new_project, all_free_donations, session)
+
     return new_project
 
 
