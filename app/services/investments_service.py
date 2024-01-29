@@ -18,13 +18,14 @@ async def get_free_donations(session: AsyncSession):
 
 
 async def investing_process(new_project, donations, session: AsyncSession):
+    remaining_difference = 0
     for donation in donations:
         if new_project.fully_invested == 1:
             break
 
-        remaining_amount = new_project.full_amount - new_project.invested_amount
+        remaining_amount = new_project.full_amount - (new_project.invested_amount + remaining_difference)
 
-        if donation.full_amount == remaining_amount:
+        if donation.full_amount == new_project.full_amount:
             new_project.invested_amount = donation.full_amount
             new_project.fully_invested = 1
             new_project.close_date = datetime.now(timezone.utc)
@@ -33,19 +34,24 @@ async def investing_process(new_project, donations, session: AsyncSession):
             donation.fully_invested = 1
             donation.close_date = datetime.now(timezone.utc)
 
-        elif donation.full_amount < remaining_amount:
-            new_project.invested_amount = donation.full_amount
-            donation.invested_amount = donation.full_amount
-            donation.fully_invested = 1
-            donation.close_date = datetime.now(timezone.utc)
+        elif donation.full_amount > remaining_amount:
+            difference = donation.full_amount - remaining_amount
+            new_project.invested_amount = donation.full_amount - difference
+            new_project.fully_invested = 1
+            new_project.close_date = datetime.now(timezone.utc)
+            donation.invested_amount = donation.full_amount - difference
 
         else:
-            new_project.invested_amount += remaining_amount
+            new_project.invested_amount += donation.full_amount
+            donation.invested_amount = donation.full_amount
+
+        if new_project.invested_amount >= new_project.full_amount:
             new_project.fully_invested = 1
             new_project.close_date = datetime.now(timezone.utc)
-            donation.invested_amount = new_project.invested_amount
 
-    session.add(new_project, donation)
+        session.add(new_project)
+        session.add(donation)
+
     await session.commit()
     await session.refresh(new_project)
     return new_project
