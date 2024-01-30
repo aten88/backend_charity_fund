@@ -36,3 +36,6 @@ class DonationUserDB(DonationBase):
     comment: Optional[str]
     id: int
     create_date: datetime
+
+    class Config:
+        orm_mode = True
