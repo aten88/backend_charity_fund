@@ -7,15 +7,17 @@ from app.crud.donation import donation_crud
 from app.schemas.donation import (
     DonationCreate,
     DonationDB,
-    DonationUserDB,
 )
+from app.services.investments_service import investment_process
+from app.models.charity_project import CharityProject
+
 
 router = APIRouter()
 
 
 @router.post(
     '/',
-    response_model=DonationUserDB,
+    response_model=DonationDB,
     response_model_exclude_none=True,
     response_model_exclude_defaults=True,
 )
@@ -26,6 +28,9 @@ async def create_donation(
     """ Сделать пожертвование. """
 
     new_donation = await donation_crud.create(donation, session)
+
+    await investment_process(new_donation, CharityProject, session)
+
     return new_donation
 
 
