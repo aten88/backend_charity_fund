@@ -60,12 +60,11 @@ async def get_all_donations(
     '/my',
     response_model=list[DonationUserDB],
     response_model_exclude_none=True,
-    dependencies=[Depends(current_user)],
 )
 async def get_user_donations(
-    user_id: int,
     session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_user)
 ):
     """ Получить список моих пожертвований. """
-    all_donations = await donation_crud.get_donations_by_user(user_id, session)
+    all_donations = await donation_crud.get_donations_by_user(session=session, user=user)
     return all_donations
