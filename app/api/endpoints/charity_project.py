@@ -13,6 +13,7 @@ from app.api.validators import check_name_duplicate, check_charity_project_exist
 from app.services.investments_service import investment_process
 
 from app.models.donation import Donation
+from app.core.user import current_superuser
 
 router = APIRouter()
 
@@ -22,6 +23,7 @@ router = APIRouter()
     response_model=CharityProjectDB,
     response_model_exclude_none=True,
     response_model_exclude_defaults=True,
+    dependencies=[Depends(current_superuser)],
 )
 async def create_charity_project(
     charity_project: CharityProjectCreate,
@@ -55,7 +57,8 @@ async def get_all_charity_projects(
 @router.patch(
     '/{project_id}',
     response_model=CharityProjectDB,
-    response_model_exclude_none=True
+    response_model_exclude_none=True,
+    dependencies=[Depends(current_superuser)],
 )
 async def update_charity_project(
     project_id: int,
@@ -79,6 +82,7 @@ async def update_charity_project(
     '/{project_id}',
     response_model=CharityProjectDB,
     response_model_exclude_none=True,
+    dependencies=[Depends(current_superuser)],
 )
 async def delete_charity_project(
         project_id: int,

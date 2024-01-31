@@ -11,7 +11,7 @@ from app.schemas.donation import (
 )
 from app.services.investments_service import investment_process
 from app.models.charity_project import CharityProject
-from app.core.user import current_user
+from app.core.user import current_user, current_superuser
 from app.models import User
 
 
@@ -44,6 +44,7 @@ async def create_donation(
     '/',
     response_model=list[DonationDB],
     response_model_exclude_none=True,
+    dependencies=[Depends(current_superuser)],
 )
 async def get_all_donations(
     session: AsyncSession = Depends(get_async_session),
@@ -59,6 +60,7 @@ async def get_all_donations(
     '/my',
     response_model=list[DonationUserDB],
     response_model_exclude_none=True,
+    dependencies=[Depends(current_user)],
 )
 async def get_user_donations(
     user_id: int,
