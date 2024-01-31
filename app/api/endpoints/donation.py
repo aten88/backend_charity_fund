@@ -11,6 +11,8 @@ from app.schemas.donation import (
 )
 from app.services.investments_service import investment_process
 from app.models.charity_project import CharityProject
+from app.core.user import current_user
+from app.models import User
 
 
 router = APIRouter()
@@ -25,10 +27,13 @@ router = APIRouter()
 async def create_donation(
     donation: DonationCreate,
     session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_user),
 ):
     """ Сделать пожертвование. """
 
-    new_donation = await donation_crud.create(donation, session)
+    new_donation = await donation_crud.create(
+        donation, session, user
+    )
 
     await investment_process(new_donation, CharityProject, session)
 
@@ -52,8 +57,8 @@ async def get_all_donations(
 
 @router.get(
     '/my',
-    # response_model=list[DonationUserDB],
-    # response_model_exclude_none=True,
+    response_model=list[DonationUserDB],
+    response_model_exclude_none=True,
 )
 async def get_user_donations(
     user_id: int,

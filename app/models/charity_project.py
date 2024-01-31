@@ -14,4 +14,4 @@ class CharityProject(Base):
     invested_amount = Column(Integer, nullable=False, default=INVESTED_AMOUNT_START)
     fully_invested = Column(Boolean, nullable=False, default=False)
     create_date = Column(DateTime, default=datetime.now(timezone.utc))
-    close_date = Column(DateTime)  # проставляется автоматически в момент набора нужной суммы нужно сделать
+    close_date = Column(DateTime)

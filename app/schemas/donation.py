@@ -22,7 +22,7 @@ class DonationDB(DonationBase):
     comment: Optional[str]
     id: int
     create_date: datetime
-    # user_id: str # временно закомментил
+    user_id: Optional[int]
     invested_amount: int
     fully_invested: bool
     close_date: Optional[datetime]
@@ -34,7 +34,7 @@ class DonationDB(DonationBase):
 class DonationUserDB(DonationBase):
     """ Схема для получения пожертвования юзера из БД. """
     comment: Optional[str]
-    id: int
+    id: Optional[int]
     create_date: datetime
 
     class Config:
