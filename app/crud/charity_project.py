@@ -1,5 +1,6 @@
 from typing import Optional
 
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -23,6 +24,21 @@ class CRUDCharityProject(CRUDBase):
         )
         db_project_id = db_project_id.scalars().first()
         return db_project_id
+
+    async def remove(
+            self,
+            db_obj,
+            session: AsyncSession,
+    ):
+        """ Переопределенный метод удаления объекта. """
+        if db_obj.fully_invested or db_obj.invested_amount > 0:
+            raise HTTPException(
+                status_code=400,
+                detail='В проект были внесены средства, не подлежит удалению!'
+            )
+        await session.delete(db_obj)
+        await session.commit()
+        return db_obj
 
 
 project_crud = CRUDCharityProject(CharityProject)
