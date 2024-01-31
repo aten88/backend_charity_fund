@@ -34,7 +34,7 @@ class DonationDB(DonationBase):
 class DonationUserDB(DonationBase):
     """ Схема для получения пожертвования юзера из БД. """
     comment: Optional[str]
-    id: Optional[int]
+    id: int
     create_date: datetime
 
     class Config:
