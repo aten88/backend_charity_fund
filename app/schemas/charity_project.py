@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, PositiveInt, validator
+from pydantic import BaseModel, Field, PositiveInt, validator, Extra
 
 from app.core.constants import MAX_LEN_FIELD
 
@@ -44,6 +44,9 @@ class CharityProjectUpdate(CharityProjectBase):
     """ Схема для обновления обьекта CharityProject. """
     full_amount: Optional[PositiveInt]
     description: str = Field(None,)
+
+    class Config:
+        extra = Extra.forbid
 
     @validator('name')
     def name_cannot_be_null(cls, value):
