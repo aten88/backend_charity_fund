@@ -27,13 +27,14 @@ class CharityProjectCreate(CharityProjectBase):
 
 class CharityProjectDB(CharityProjectBase):
     """ Схема получения данных из БД. """
-    name: str = Field(..., max_length=MAX_LEN_FIELD)
+    close_date: Optional[datetime]
+    create_date: datetime
     description: str = Field(...,)
+    full_amount: PositiveInt
+    fully_invested: bool
     id: int
     invested_amount: int
-    fully_invested: bool
-    create_date: datetime
-    close_date: Optional[datetime]
+    name: str = Field(..., max_length=MAX_LEN_FIELD)
 
     class Config:
         orm_mode = True

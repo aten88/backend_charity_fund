@@ -47,7 +47,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         """ Метод проверки пароля. """
         if len(password) < 3:
             raise InvalidPasswordException(
-                reason='Пароль должен быть больше 3 символов.'
+                reason='Password should be at least 3 characters'
             )
         if user.email in password:
             raise InvalidPasswordException(

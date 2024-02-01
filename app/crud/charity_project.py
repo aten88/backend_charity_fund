@@ -1,5 +1,6 @@
 from typing import Optional
 
+from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,6 +25,34 @@ class CRUDCharityProject(CRUDBase):
         )
         db_project_id = db_project_id.scalars().first()
         return db_project_id
+
+    async def update(
+            self,
+            db_obj,
+            obj_in,
+            session: AsyncSession,
+    ):
+        """ Базовый метод обновления объекта. """
+        if db_obj.fully_invested:
+            raise HTTPException(
+                status_code=400,
+                detail='Закрытый проект нельзя редактировать!'
+            )
+        obj_data = jsonable_encoder(db_obj)
+        update_data = obj_in.dict(exclude_unset=True)
+        # if 'full_amount' in update_data and update_data['full_amount'] < db_obj.full_amount:
+        #     raise HTTPException(
+        #         status_code=400,
+        #         detail='Предложенная сумма проекта меньше предыдущей!'
+        #     )
+
+        for field in obj_data:
+            if field in update_data:
+                setattr(db_obj, field, update_data[field])
+        session.add(db_obj)
+        await session.commit()
+        await session.refresh(db_obj)
+        return db_obj
 
     async def remove(
             self,

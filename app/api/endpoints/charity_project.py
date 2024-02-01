@@ -9,7 +9,11 @@ from app.schemas.charity_project import (
     CharityProjectDB,
     CharityProjectUpdate,
 )
-from app.api.validators import check_name_duplicate, check_charity_project_exists
+from app.api.validators import (
+    check_name_duplicate,
+    check_charity_project_exists,
+    check_description,
+)
 from app.services.investments_service import investment_process
 
 from app.models.donation import Donation
@@ -33,6 +37,7 @@ async def create_charity_project(
 
         Создает благотворительный проект."""
     await check_name_duplicate(charity_project.name, session)
+    await check_description(charity_project.description, session)
 
     new_project = await project_crud.create(charity_project, session)
 

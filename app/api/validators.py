@@ -10,11 +10,27 @@ async def check_name_duplicate(
     session: AsyncSession,
 ) -> None:
     """ Метод для проверки имени проекта на дубликаты. """
+    if not project_name:
+        raise HTTPException(
+            status_code=422,
+            detail='Имя проекта не может быть пустым'
+        )
     project_id = await project_crud.get_project_id_by_name(project_name, session)
     if project_id is not None:
         raise HTTPException(
-            status_code=422,
+            status_code=400,
             detail='Проект с таким именем уже существует!'
+        )
+
+
+async def check_description(
+        project_descrition: str,
+        session: AsyncSession,
+) -> None:
+    if not project_descrition:
+        raise HTTPException(
+            status_code=422,
+            detail='Описание проекта не может быть пустым!'
         )
 
 
