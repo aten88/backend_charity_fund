@@ -73,6 +73,7 @@ async def update_charity_project(
 
         Закрытый проект нельзя редактировать, также нельзя установить требуемую сумму меньше уже вложенной. """
     charity_project = await check_charity_project_exists(project_id, session)
+
     if obj_in.name is not None:
         await check_name_duplicate(obj_in.name, session)
 
