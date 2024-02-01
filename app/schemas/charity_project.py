@@ -51,3 +51,10 @@ class CharityProjectUpdate(CharityProjectBase):
         if value is None:
             raise ValueError('Имя проекта не может быть пустым.')
         return value
+
+    @validator('description')
+    def description_cannot_be_null(cls, value):
+        """ Валидатор поля name. """
+        if not value:
+            raise ValueError('Описание проекта не может быть пустым.')
+        return value

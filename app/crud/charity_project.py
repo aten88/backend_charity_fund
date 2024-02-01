@@ -32,7 +32,7 @@ class CRUDCharityProject(CRUDBase):
             obj_in,
             session: AsyncSession,
     ):
-        """ Базовый метод обновления объекта. """
+        """ Метод обновления объекта. """
         if db_obj.fully_invested:
             raise HTTPException(
                 status_code=400,
@@ -40,11 +40,6 @@ class CRUDCharityProject(CRUDBase):
             )
         obj_data = jsonable_encoder(db_obj)
         update_data = obj_in.dict(exclude_unset=True)
-        # if 'full_amount' in update_data and update_data['full_amount'] < db_obj.full_amount:
-        #     raise HTTPException(
-        #         status_code=400,
-        #         detail='Предложенная сумма проекта меньше предыдущей!'
-        #     )
 
         for field in obj_data:
             if field in update_data:
@@ -59,7 +54,7 @@ class CRUDCharityProject(CRUDBase):
             db_obj,
             session: AsyncSession,
     ):
-        """ Переопределенный метод удаления объекта. """
+        """ Метод удаления объекта. """
         if db_obj.fully_invested or db_obj.invested_amount > 0:
             raise HTTPException(
                 status_code=400,
