@@ -9,7 +9,7 @@ from app.models import User
 
 
 class CRUDBase:
-    """ Класс основа для операций CRUD """
+    """ Класс-основа для операций CRUD. """
 
     def __init__(self, model):
         self.model = model

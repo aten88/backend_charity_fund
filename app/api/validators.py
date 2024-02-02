@@ -28,6 +28,7 @@ async def check_description(
         project_descrition: str,
         session: AsyncSession,
 ) -> None:
+    """ Метод проверки описания проекта. """
     if not project_descrition:
         raise HTTPException(
             status_code=HTTPStatus.UNPROCESSABLE_ENTITY,

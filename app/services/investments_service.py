@@ -12,7 +12,7 @@ def reinvestment_process(
     new_obj: Union[CharityProject, Donation],
     open_obj: Union[CharityProject, Donation],
 ):
-    """ Метод перераспределения сумм между проектами и донатами."""
+    """ Метод перераспределения сумм между Донатами/Проектами."""
     to_close_new_obj = new_obj.full_amount - new_obj.invested_amount
     to_close_open_obj = open_obj.full_amount - open_obj.invested_amount
     if to_close_new_obj <= to_close_open_obj:

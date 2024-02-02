@@ -26,7 +26,7 @@ class CharityProjectCreate(CharityProjectBase):
 
 
 class CharityProjectDB(CharityProjectBase):
-    """ Схема получения данных из БД. """
+    """ Схема получения обьектов CharityProject из БД. """
     close_date: Optional[datetime]
     create_date: datetime
     description: str = Field(...,)

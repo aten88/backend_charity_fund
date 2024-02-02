@@ -12,6 +12,7 @@ class CRUDDonations(CRUDBase):
             session: AsyncSession,
             user: User,
     ):
+        """ Метод получения донатов юзера. """
         donations = await session.execute(
             select(Donation).where(
                 Donation.user_id == user.id

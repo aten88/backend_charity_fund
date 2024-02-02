@@ -18,7 +18,7 @@ class CRUDCharityProject(CRUDBase):
             project_name: str,
             session: AsyncSession,
     ) -> Optional[int]:
-        """ Метод для поиска id обьекта по имени. """
+        """ Метод для поиска id проекта по полю name. """
         db_project_id = await session.execute(
             select(CharityProject.id).where(
                 CharityProject.name == project_name
@@ -33,7 +33,7 @@ class CRUDCharityProject(CRUDBase):
             obj_in,
             session: AsyncSession,
     ):
-        """ Метод обновления объекта. """
+        """ Метод для обновления проекта. """
         if db_obj.fully_invested:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,

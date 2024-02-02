@@ -16,6 +16,7 @@ get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
 async def create_user(
         email: EmailStr, password: str, is_superuser: bool = False
 ):
+    """ Метод создания юзера. """
     try:
         async with get_async_session_context() as session:
             async with get_user_db_context(session) as user_db:
@@ -36,6 +37,7 @@ async def create_first_superuser():
         settings.first_superuser_email is not None and
         settings.first_superuser_password is not None
     ):
+        """ Метод создания суперюзера по умолчанию. """
         await create_user(
             email=settings.first_superuser_email,
             password=settings.first_superuser_password,
