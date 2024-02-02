@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CharityProject, Donation
 from app.services.close_service import closing_process
+from app.core.constants import BOOLEAN_VARIABLE
 
 
 def reinvestment_process(
@@ -31,7 +32,7 @@ async def investment_process(
 ) -> None:
     """ Метод инвестирования Донатов/Проектов. """
     all_open_objs = await session.execute(
-        select(model).where(model.fully_invested == 0)
+        select(model).where(model.fully_invested == BOOLEAN_VARIABLE)
     )
     all_open_objs = all_open_objs.scalars().all()
     for open_obj in all_open_objs:

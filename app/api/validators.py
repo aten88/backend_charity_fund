@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,13 +13,13 @@ async def check_name_duplicate(
     """ Метод для проверки имени проекта на дубликаты. """
     if not project_name:
         raise HTTPException(
-            status_code=422,
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
             detail='Имя проекта не может быть пустым'
         )
     project_id = await project_crud.get_project_id_by_name(project_name, session)
     if project_id is not None:
         raise HTTPException(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST,
             detail='Проект с таким именем уже существует!'
         )
 
@@ -29,7 +30,7 @@ async def check_description(
 ) -> None:
     if not project_descrition:
         raise HTTPException(
-            status_code=422,
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
             detail='Описание проекта не может быть пустым!'
         )
 
@@ -44,7 +45,7 @@ async def check_charity_project_exists(
     )
     if charity_project is None:
         raise HTTPException(
-            status_code=404,
+            status_code=HTTPStatus.NOT_FOUND,
             detail='Проект с таким id не найден!'
         )
     return charity_project

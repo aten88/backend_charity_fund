@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
@@ -35,7 +36,7 @@ class CRUDCharityProject(CRUDBase):
         """ Метод обновления объекта. """
         if db_obj.fully_invested:
             raise HTTPException(
-                status_code=400,
+                status_code=HTTPStatus.BAD_REQUEST,
                 detail='Закрытый проект нельзя редактировать!'
             )
         obj_data = jsonable_encoder(db_obj)
@@ -43,7 +44,7 @@ class CRUDCharityProject(CRUDBase):
 
         if 'full_amount' in update_data and update_data['full_amount'] < db_obj.invested_amount:
             raise HTTPException(
-                status_code=400,
+                status_code=HTTPStatus.BAD_REQUEST,
                 detail='Сумма проекта не может быть меньше инвестированной суммы!'
             )
 
@@ -63,7 +64,7 @@ class CRUDCharityProject(CRUDBase):
         """ Метод удаления объекта. """
         if db_obj.fully_invested or db_obj.invested_amount > 0:
             raise HTTPException(
-                status_code=400,
+                status_code=HTTPStatus.BAD_REQUEST,
                 detail='В проект были внесены средства, не подлежит удалению!'
             )
         await session.delete(db_obj)

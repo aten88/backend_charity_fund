@@ -15,6 +15,7 @@ from app.core.config import settings
 from app.core.db import get_async_session
 from app.models.user import User
 from app.schemas.user import UserCreate
+from app.core.constants import TOKEN_LIFETIME, INVALID_LENGTH
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
@@ -26,7 +27,7 @@ bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
 
 def get_jwt_strategy() -> JWTStrategy:
     """ Стратегия хранения токена в виде JWT. """
-    return JWTStrategy(secret=settings.secret, lifetime_seconds=3600)
+    return JWTStrategy(secret=settings.secret, lifetime_seconds=TOKEN_LIFETIME)
 
 
 auth_backend = AuthenticationBackend(
@@ -45,7 +46,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
             user: Union[UserCreate, User]
     ) -> None:
         """ Метод проверки пароля. """
-        if len(password) < 3:
+        if len(password) < INVALID_LENGTH:
             raise InvalidPasswordException(
                 reason='Password should be at least 3 characters'
             )

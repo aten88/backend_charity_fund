@@ -2,13 +2,13 @@ from datetime import datetime, timezone
 
 from sqlalchemy import Column, String, Text, Integer, Boolean, DateTime
 
-from app.core.constants import INVESTED_AMOUNT_START
+from app.core.constants import INVESTED_AMOUNT_START, MAX_LEN_FIELD
 from app.core.db import Base
 
 
 class CharityProject(Base):
     """ Модель проектов. """
-    name = Column(String(100), unique=True, nullable=False)
+    name = Column(String(MAX_LEN_FIELD), unique=True, nullable=False)
     description = Column(Text, nullable=False)
     full_amount = Column(Integer, nullable=False)
     invested_amount = Column(Integer, nullable=False, default=INVESTED_AMOUNT_START)
