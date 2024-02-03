@@ -1,11 +1,19 @@
+from datetime import datetime
 from typing import Union
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CharityProject, Donation
-from app.services.close_service import closing_process
 from app.core.constants import BOOLEAN_VARIABLE
+
+
+def closing_process(obj: Union[CharityProject, Donation]) -> Union[CharityProject, Donation]:
+    """ Закрывает проект/донат публикует дату закрытия. """
+    if obj.full_amount == obj.invested_amount:
+        obj.fully_invested = True
+        obj.close_date = datetime.now()
+    return obj
 
 
 def reinvestment_process(
