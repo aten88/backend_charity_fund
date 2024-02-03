@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
@@ -15,7 +14,6 @@ from app.api.validators import (
     check_description,
 )
 from app.services.investments_service import investment_process
-
 from app.models.donation import Donation
 from app.core.user import current_superuser
 
