@@ -50,7 +50,8 @@ async def get_all_donations(
 ):
     """ Только для суперюзеров.
 
-    Получает список всех пожертвований. """
+    Получает список всех пожертвований.
+    """
     all_donations = await donation_crud.get_multi(session)
     return all_donations
 

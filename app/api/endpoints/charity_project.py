@@ -33,7 +33,8 @@ async def create_charity_project(
 ):
     """ Только для суперюзеров.
 
-        Создает благотворительный проект."""
+        Создает благотворительный проект.
+    """
     await check_name_duplicate(charity_project.name, session)
     await check_description(charity_project.description, session)
 
@@ -69,7 +70,8 @@ async def update_charity_project(
 ):
     """ Только для суперюзеров.
 
-        Закрытый проект нельзя редактировать, также нельзя установить требуемую сумму меньше уже вложенной. """
+        Закрытый проект нельзя редактировать, также нельзя установить требуемую сумму меньше уже вложенной.
+    """
     charity_project = await check_charity_project_exists(project_id, session)
 
     if obj_in.name is not None:
@@ -92,7 +94,8 @@ async def delete_charity_project(
 ):
     """ Только для суперюзеров.
 
-        Удаляет проект. Нельзя удалить проект, в который уже были инвестированы средства, его можно только закрыть. """
+        Удаляет проект. Нельзя удалить проект, в который уже были инвестированы средства, его можно только закрыть.
+    """
     charity_project = await check_charity_project_exists(
         project_id, session
     )
