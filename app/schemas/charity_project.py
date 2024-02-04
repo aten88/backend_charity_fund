@@ -1,15 +1,16 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, PositiveInt, validator, Extra
+from pydantic import BaseModel, Field, PositiveInt, Extra
 
-from app.core.constants import MAX_LEN_FIELD
+from app.core.constants import MAX_LEN_FIELD, MIN_LEN_FIELD
 
 
 class CharityProjectBase(BaseModel):
     """ Основа для схем проекта. """
     name: str = Field(
         None,
+        min_length=MIN_LEN_FIELD,
         max_length=MAX_LEN_FIELD
     )
     description: str = Field(
@@ -21,20 +22,20 @@ class CharityProjectBase(BaseModel):
 
 class CharityProjectCreate(CharityProjectBase):
     """ Схема для создания обьекта CharityProject. """
-    name: str = Field(..., max_length=MAX_LEN_FIELD)
-    description: str = Field(...,)
+    name: str = Field(max_length=MAX_LEN_FIELD)
+    description: str
 
 
 class CharityProjectDB(CharityProjectBase):
     """ Схема получения обьектов CharityProject из БД. """
     close_date: Optional[datetime]
     create_date: datetime
-    description: str = Field(...,)
+    description: str
     full_amount: PositiveInt
     fully_invested: bool
     id: int
     invested_amount: int
-    name: str = Field(..., max_length=MAX_LEN_FIELD)
+    name: str = Field(max_length=MAX_LEN_FIELD)
 
     class Config:
         orm_mode = True
@@ -43,21 +44,7 @@ class CharityProjectDB(CharityProjectBase):
 class CharityProjectUpdate(CharityProjectBase):
     """ Схема для обновления обьекта CharityProject. """
     full_amount: Optional[PositiveInt]
-    description: str = Field(None,)
+    description: str = Field(None, min_length=MIN_LEN_FIELD)
 
     class Config:
         extra = Extra.forbid
-
-    @validator('name')
-    def name_cannot_be_null(cls, value):
-        """ Валидатор поля name. """
-        if value is None:
-            raise ValueError('Имя проекта не может быть пустым.')
-        return value
-
-    @validator('description')
-    def description_cannot_be_null(cls, value):
-        """ Валидатор поля description. """
-        if not value:
-            raise ValueError('Описание проекта не может быть пустым.')
-        return value
