@@ -11,7 +11,8 @@ from app.schemas.charity_project import (
 from app.api.validators import (
     check_name_duplicate,
     check_charity_project_exists,
-    check_description,
+    check_description, check_fully_invested,
+    validate_full_amount
 )
 from app.services.investments_service import investment_process
 from app.models.donation import Donation
@@ -72,11 +73,13 @@ async def update_charity_project(
 
         Закрытый проект нельзя редактировать, также нельзя установить требуемую сумму меньше уже вложенной.
     """
-    charity_project = await check_charity_project_exists(project_id, session)
+    await check_charity_project_exists(project_id, session)
+    charity_project = await check_fully_invested(project_id, session)
 
     if obj_in.name is not None:
         await check_name_duplicate(obj_in.name, session)
 
+    await validate_full_amount(obj_in.dict(exclude_unset=True), charity_project, session)
     charity_project = await project_crud.update(
         charity_project, obj_in, session
     )

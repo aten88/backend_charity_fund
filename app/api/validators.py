@@ -51,3 +51,27 @@ async def check_charity_project_exists(
             detail='Проект с таким id не найден!'
         )
     return charity_project
+
+
+async def check_fully_invested(
+        project_id: int,
+        session: AsyncSession,
+) -> CharityProject:
+    charity_project = await project_crud.get(
+        project_id, session
+    )
+    if charity_project.fully_invested:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail='Закрытый проект нельзя редактировать!'
+        )
+    return charity_project
+
+
+async def validate_full_amount(update_data, db_obj, session: AsyncSession):
+    """ Метод-валидатор для проверки full_amount. """
+    if 'full_amount' in update_data and update_data['full_amount'] < db_obj.invested_amount:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail='Сумма проекта не может быть меньше инвестированной суммы!'
+        )
