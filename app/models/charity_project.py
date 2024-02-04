@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlalchemy import Column, String, Text, Integer, Boolean, DateTime
 
@@ -13,5 +13,5 @@ class CharityProject(Base):
     full_amount = Column(Integer, nullable=False)
     invested_amount = Column(Integer, nullable=False, default=INVESTED_AMOUNT_START)
     fully_invested = Column(Boolean, nullable=False, default=False)
-    create_date = Column(DateTime, default=datetime.now(timezone.utc))
+    create_date = Column(DateTime, default=datetime.now())
     close_date = Column(DateTime)

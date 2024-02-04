@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
@@ -46,7 +46,7 @@ class CRUDBase:
         obj_in_data = obj_in.dict()
         if user is not None:
             obj_in_data['user_id'] = user.id
-        obj_in_data['create_date'] = datetime.now(timezone.utc)
+        obj_in_data['create_date'] = datetime.now()
         db_obj = self.model(**obj_in_data)
         session.add(db_obj)
         await session.commit()
