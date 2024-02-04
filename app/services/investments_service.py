@@ -10,9 +10,8 @@ from app.core.constants import BOOLEAN_VARIABLE
 
 def closing_process(obj: Union[CharityProject, Donation]) -> Union[CharityProject, Donation]:
     """ Закрывает проект/донат публикует дату закрытия. """
-    if obj.full_amount == obj.invested_amount:
-        obj.fully_invested = True
-        obj.close_date = datetime.now()
+    obj.fully_invested = True
+    obj.close_date = datetime.now()
     return obj
 
 
@@ -20,16 +19,13 @@ def reinvestment_process(
     new_obj: Union[CharityProject, Donation],
     open_obj: Union[CharityProject, Donation],
 ):
-    """ Метод перераспределения сумм между Донатами/Проектами."""
+    """Метод перераспределения сумм между Донатами/Проектами."""
     to_close_new_obj = new_obj.full_amount - new_obj.invested_amount
     to_close_open_obj = open_obj.full_amount - open_obj.invested_amount
-    if to_close_new_obj <= to_close_open_obj:
-        open_obj.invested_amount += to_close_new_obj
-        new_obj.invested_amount += to_close_new_obj
-    else:
-        open_obj.invested_amount += to_close_open_obj
-        to_close_new_obj -= to_close_open_obj
-        new_obj.invested_amount += to_close_open_obj
+    to_close = min(to_close_new_obj, to_close_open_obj)
+    open_obj.invested_amount += to_close
+    new_obj.invested_amount += to_close
+
     return new_obj, open_obj
 
 
