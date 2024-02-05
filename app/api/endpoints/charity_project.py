@@ -8,15 +8,11 @@ from app.schemas.charity_project import (
     CharityProjectDB,
     CharityProjectUpdate,
 )
-from app.api.validators import (
-    check_name_duplicate,
-    check_charity_project_exists,
-    check_description, check_fully_invested,
-    validate_full_amount, check_fully_and_invested_amounts
-)
+from app.api.validators import charity_project_validators
 from app.services.investments_service import investment_process
 from app.models.donation import Donation
 from app.core.user import current_superuser
+
 
 router = APIRouter()
 
@@ -36,8 +32,7 @@ async def create_charity_project(
 
         Создает благотворительный проект.
     """
-    await check_name_duplicate(charity_project.name, session)
-    await check_description(charity_project.description, session)
+    await charity_project_validators.validate_create(charity_project, session)
 
     new_project = await project_crud.create(charity_project, session)
 
@@ -73,13 +68,7 @@ async def update_charity_project(
 
         Закрытый проект нельзя редактировать, также нельзя установить требуемую сумму меньше уже вложенной.
     """
-    await check_charity_project_exists(project_id, session)
-    charity_project = await check_fully_invested(project_id, session)
-
-    if obj_in.name is not None:
-        await check_name_duplicate(obj_in.name, session)
-
-    await validate_full_amount(obj_in.dict(exclude_unset=True), charity_project, session)
+    charity_project = await charity_project_validators.validate_update(project_id, obj_in, session)
 
     charity_project = await project_crud.update(
         charity_project, obj_in, session
@@ -100,10 +89,9 @@ async def delete_charity_project(
 
         Удаляет проект. Нельзя удалить проект, в который уже были инвестированы средства, его можно только закрыть.
     """
-    await check_fully_and_invested_amounts(project_id, session)
-    charity_project = await check_charity_project_exists(
-        project_id, session
-    )
+
+    charity_project = await charity_project_validators.validate_delete(project_id, session)
+
     charity_project = await project_crud.remove(
         charity_project, session
     )
