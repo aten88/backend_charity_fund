@@ -7,10 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import User
 
 
-from http import HTTPStatus
-from fastapi import HTTPException
-
-
 class CRUDBase:
     """ Класс-основа для операций CRUD. """
 
@@ -79,11 +75,6 @@ class CRUDBase:
             session: AsyncSession,
     ):
         """ Базовый метод удаления объекта. """
-        if db_obj.fully_invested or db_obj.invested_amount > 0:
-            raise HTTPException(
-                status_code=HTTPStatus.BAD_REQUEST,
-                detail='В проект были внесены средства, не подлежит удалению!'
-            )
         await session.delete(db_obj)
         await session.commit()
         return db_obj

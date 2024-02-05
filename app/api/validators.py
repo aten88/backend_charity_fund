@@ -75,3 +75,12 @@ async def validate_full_amount(update_data, db_obj, session: AsyncSession):
             status_code=HTTPStatus.BAD_REQUEST,
             detail='Сумма проекта не может быть меньше инвестированной суммы!'
         )
+
+
+async def check_fully_and_invested_amounts(project_id: int, session) -> CharityProject:
+    charity_project = await project_crud.get(project_id, session)
+    if charity_project.fully_invested or charity_project.invested_amount > 0:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail='В проект были внесены средства, не подлежит удалению!'
+        )

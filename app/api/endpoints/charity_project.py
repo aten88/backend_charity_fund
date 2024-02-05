@@ -12,7 +12,7 @@ from app.api.validators import (
     check_name_duplicate,
     check_charity_project_exists,
     check_description, check_fully_invested,
-    validate_full_amount
+    validate_full_amount, check_fully_and_invested_amounts
 )
 from app.services.investments_service import investment_process
 from app.models.donation import Donation
@@ -80,6 +80,7 @@ async def update_charity_project(
         await check_name_duplicate(obj_in.name, session)
 
     await validate_full_amount(obj_in.dict(exclude_unset=True), charity_project, session)
+
     charity_project = await project_crud.update(
         charity_project, obj_in, session
     )
@@ -99,6 +100,7 @@ async def delete_charity_project(
 
         Удаляет проект. Нельзя удалить проект, в который уже были инвестированы средства, его можно только закрыть.
     """
+    await check_fully_and_invested_amounts(project_id, session)
     charity_project = await check_charity_project_exists(
         project_id, session
     )
