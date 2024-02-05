@@ -9,7 +9,6 @@ from app.schemas.charity_project import (
     CharityProjectUpdate,
 )
 from app.api.validators import charity_project_validators
-from app.services.investments_service import investment_process
 from app.models.donation import Donation
 from app.core.user import current_superuser
 
@@ -27,6 +26,7 @@ router = APIRouter()
 async def create_charity_project(
     charity_project: CharityProjectCreate,
     session: AsyncSession = Depends(get_async_session),
+    model: str = Donation
 ):
     """ Только для суперюзеров.
 
@@ -34,9 +34,7 @@ async def create_charity_project(
     """
     await charity_project_validators.validate_create(charity_project, session)
 
-    new_project = await project_crud.create(charity_project, session)
-
-    await investment_process(new_project, Donation, session)
+    new_project = await project_crud.create(charity_project, model, session)
 
     return new_project
 
