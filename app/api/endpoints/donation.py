@@ -8,10 +8,9 @@ from app.schemas.donation import (
     DonationDB,
     DonationUserDB
 )
-from app.services.investments_service import investment_process
 from app.models.charity_project import CharityProject
 from app.core.user import current_user, current_superuser
-from app.models import User
+from app.models import User, CharityProject
 
 
 router = APIRouter()
@@ -26,15 +25,14 @@ router = APIRouter()
 async def create_donation(
     donation: DonationCreate,
     session: AsyncSession = Depends(get_async_session),
+    model: str = CharityProject,
     user: User = Depends(current_user),
 ):
     """ Сделать пожертвование. """
 
     new_donation = await donation_crud.create(
-        donation, session, user
+        donation, model, session, user
     )
-
-    await investment_process(new_donation, CharityProject, session)
 
     return new_donation
 
