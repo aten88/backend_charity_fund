@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import User
+from app.services.investments_service import investment_process
 
 
 class CRUDBase:
@@ -38,6 +39,7 @@ class CRUDBase:
     async def create(
             self,
             obj_in,
+            model,
             session: AsyncSession,
             user: Optional[User] = None,
     ):
@@ -49,6 +51,7 @@ class CRUDBase:
         session.add(db_obj)
         await session.commit()
         await session.refresh(db_obj)
+        await investment_process(db_obj, model, session)
         return db_obj
 
     async def update(
