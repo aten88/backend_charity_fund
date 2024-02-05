@@ -11,6 +11,7 @@ class CharityProjectValidators:
     """ Класс-валидатор. """
     @classmethod
     async def validate_create(cls, charity_project: CharityProjectCreate, session: AsyncSession):
+        """ Набор валидаторов для create. """
         await cls.check_name(charity_project.name, session)
         await cls.check_description(charity_project.description, session)
 
@@ -18,6 +19,7 @@ class CharityProjectValidators:
     async def validate_update(
         cls, project_id: int, obj_in: CharityProjectUpdate, session: AsyncSession
     ):
+        """ Набор валидаторов для update. """
         await cls.check_charity_project_exists(project_id, session)
         charity_project = await cls.check_fully_invested(project_id, session)
 
@@ -29,12 +31,14 @@ class CharityProjectValidators:
 
     @classmethod
     async def validate_delete(cls, project_id: int, session: AsyncSession):
+        """ Набор валидаторов для delete. """
         await cls.check_fully_and_invested_amounts(project_id, session)
         charity_project = await cls.check_charity_project_exists(project_id, session)
         return charity_project
 
     @staticmethod
     async def check_name(project_name: str, session: AsyncSession):
+        """ Валидатор проверки имени. """
         if not project_name:
             raise HTTPException(
                 status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
@@ -49,6 +53,7 @@ class CharityProjectValidators:
 
     @staticmethod
     async def check_description(project_description: str, session: AsyncSession):
+        """ Валидатор для проверки описания. """
         if not project_description:
             raise HTTPException(
                 status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
@@ -57,6 +62,7 @@ class CharityProjectValidators:
 
     @staticmethod
     async def check_charity_project_exists(project_id: int, session: AsyncSession):
+        """ Проверяет наличие проекта. """
         charity_project = await project_crud.get(project_id, session)
         if charity_project is None:
             raise HTTPException(
@@ -67,6 +73,7 @@ class CharityProjectValidators:
 
     @staticmethod
     async def check_fully_invested(project_id: int, session: AsyncSession):
+        """ Проверяет поле full_invested. """
         charity_project = await project_crud.get(project_id, session)
         if charity_project.fully_invested:
             raise HTTPException(
@@ -77,6 +84,7 @@ class CharityProjectValidators:
 
     @staticmethod
     async def validate_full_amount(update_data, db_obj, session: AsyncSession):
+        """ Проверяет поле full_amount. """
         if 'full_amount' in update_data and update_data['full_amount'] < db_obj.invested_amount:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
@@ -85,6 +93,7 @@ class CharityProjectValidators:
 
     @staticmethod
     async def check_fully_and_invested_amounts(project_id: int, session: AsyncSession):
+        """ Проверяет наличие инвестированных средств. """
         charity_project = await project_crud.get(project_id, session)
         if charity_project.fully_invested or charity_project.invested_amount > 0:
             raise HTTPException(
@@ -94,3 +103,5 @@ class CharityProjectValidators:
 
 
 charity_project_validators = CharityProjectValidators()
+
+### Эта версия работает
