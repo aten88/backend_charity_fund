@@ -8,9 +8,8 @@ from app.schemas.charity_project import (
     CharityProjectDB,
     CharityProjectUpdate,
 )
-from app.api.validators import charity_project_validators
-from app.models.donation import Donation
 from app.core.user import current_superuser
+from app.services.charity_project_service import CharityProjectService
 
 
 router = APIRouter()
@@ -26,16 +25,13 @@ router = APIRouter()
 async def create_charity_project(
     charity_project: CharityProjectCreate,
     session: AsyncSession = Depends(get_async_session),
+    create_service: CharityProjectService = Depends()
 ):
     """ Только для суперюзеров.
 
         Создает благотворительный проект.
     """
-    await charity_project_validators.validate_create(charity_project, session)
-
-    new_project = await project_crud.create(charity_project, Donation, session)
-
-    return new_project
+    return await create_service.create_charity_project(charity_project, session)
 
 
 @router.get(
@@ -47,8 +43,7 @@ async def get_all_charity_projects(
     session: AsyncSession = Depends(get_async_session),
 ):
     """ Получает список всех проектов. """
-    all_projects = await project_crud.get_multi(session)
-    return all_projects
+    return await project_crud.get_multi(session)
 
 
 @router.patch(
@@ -59,18 +54,14 @@ async def get_all_charity_projects(
 async def update_charity_project(
     project_id: int,
     obj_in: CharityProjectUpdate,
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
+    update_service: CharityProjectService = Depends()
 ):
     """ Только для суперюзеров.
 
         Закрытый проект нельзя редактировать, также нельзя установить требуемую сумму меньше уже вложенной.
     """
-    charity_project = await charity_project_validators.validate_update(project_id, obj_in, session)
-
-    charity_project = await project_crud.update(
-        charity_project, obj_in, session
-    )
-    return charity_project
+    return await update_service.update_charity_project(project_id, obj_in, session)
 
 
 @router.delete(
@@ -81,15 +72,10 @@ async def update_charity_project(
 async def delete_charity_project(
         project_id: int,
         session: AsyncSession = Depends(get_async_session),
+        remove_service: CharityProjectService = Depends()
 ):
     """ Только для суперюзеров.
 
         Удаляет проект. Нельзя удалить проект, в который уже были инвестированы средства, его можно только закрыть.
     """
-
-    charity_project = await charity_project_validators.validate_delete(project_id, session)
-
-    charity_project = await project_crud.remove(
-        charity_project, session
-    )
-    return charity_project
+    return await remove_service.delete_charity_project(project_id, session)
