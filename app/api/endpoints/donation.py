@@ -8,7 +8,6 @@ from app.schemas.donation import (
     DonationDB,
     DonationUserDB
 )
-from app.services.investments_service import investment_process
 from app.models.charity_project import CharityProject
 from app.core.user import current_user, current_superuser
 from app.models import User
@@ -31,9 +30,8 @@ async def create_donation(
     """ Сделать пожертвование. """
 
     new_donation = await donation_crud.create(
-        donation, session, user
+        donation, CharityProject, session, user
     )
-    await investment_process(new_donation, CharityProject, session)
 
     return new_donation
 
