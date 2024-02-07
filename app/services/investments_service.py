@@ -4,8 +4,8 @@ from typing import Union
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import CharityProject, Donation
 from app.core.constants import BOOLEAN_VARIABLE
+from app.models import CharityProject, Donation
 
 
 def closing_process(obj: Union[CharityProject, Donation]) -> Union[CharityProject, Donation]:

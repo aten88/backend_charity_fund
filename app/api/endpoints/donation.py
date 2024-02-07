@@ -2,15 +2,15 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
+from app.core.user import current_user, current_superuser
 from app.crud.donation import donation_crud
+from app.models import User
+from app.services.projects_donats_services import DonationService
 from app.schemas.donation import (
     DonationCreate,
     DonationDB,
     DonationUserDB
 )
-from app.models.charity_project import CharityProject
-from app.core.user import current_user, current_superuser
-from app.models import User
 
 
 router = APIRouter()
@@ -26,14 +26,11 @@ async def create_donation(
     donation: DonationCreate,
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_user),
+    donation_service: DonationService = Depends()
 ):
     """ Сделать пожертвование. """
 
-    new_donation = await donation_crud.create(
-        donation, CharityProject, session, user
-    )
-
-    return new_donation
+    return await donation_service.create_donation(donation, session, user)
 
 
 @router.get(

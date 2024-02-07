@@ -1,11 +1,10 @@
-from typing import Optional, Union
+from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import User, CharityProject, Donation
-from app.services.investments_service import investment_process
+from app.models import User
 
 
 class CRUDBase:
@@ -39,7 +38,6 @@ class CRUDBase:
     async def create(
             self,
             obj_in,
-            investment_model: Union[CharityProject, Donation],
             session: AsyncSession,
             user: Optional[User] = None,
     ):
@@ -51,7 +49,7 @@ class CRUDBase:
         session.add(db_obj)
         await session.commit()
         await session.refresh(db_obj)
-        await investment_process(db_obj, investment_model, session)
+
         return db_obj
 
     async def update(
