@@ -24,14 +24,13 @@ router = APIRouter()
 )
 async def create_charity_project(
     charity_project: CharityProjectCreate,
-    session: AsyncSession = Depends(get_async_session),
     create_service: CharityProjectService = Depends()
 ):
     """ Только для суперюзеров.
 
         Создает благотворительный проект.
     """
-    return await create_service.create_charity_project(charity_project, session)
+    return await create_service.create_charity_project(charity_project)
 
 
 @router.get(
@@ -54,14 +53,13 @@ async def get_all_charity_projects(
 async def update_charity_project(
     project_id: int,
     obj_in: CharityProjectUpdate,
-    session: AsyncSession = Depends(get_async_session),
     update_service: CharityProjectService = Depends()
 ):
     """ Только для суперюзеров.
 
         Закрытый проект нельзя редактировать, также нельзя установить требуемую сумму меньше уже вложенной.
     """
-    return await update_service.update_charity_project(project_id, obj_in, session)
+    return await update_service.update_charity_project(project_id, obj_in)
 
 
 @router.delete(
@@ -71,11 +69,10 @@ async def update_charity_project(
 )
 async def delete_charity_project(
         project_id: int,
-        session: AsyncSession = Depends(get_async_session),
         remove_service: CharityProjectService = Depends()
 ):
     """ Только для суперюзеров.
 
         Удаляет проект. Нельзя удалить проект, в который уже были инвестированы средства, его можно только закрыть.
     """
-    return await remove_service.delete_charity_project(project_id, session)
+    return await remove_service.delete_charity_project(project_id)

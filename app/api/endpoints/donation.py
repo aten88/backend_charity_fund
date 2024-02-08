@@ -24,13 +24,11 @@ router = APIRouter()
 )
 async def create_donation(
     donation: DonationCreate,
-    session: AsyncSession = Depends(get_async_session),
-    user: User = Depends(current_user),
     donation_service: DonationService = Depends()
 ):
     """ Сделать пожертвование. """
 
-    return await donation_service.create_donation(donation, session, user)
+    return await donation_service.create_donation(donation)
 
 
 @router.get(

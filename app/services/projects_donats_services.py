@@ -18,56 +18,59 @@ from app.schemas.donation import DonationCreate
 
 
 class CharityProjectService:
-    """ Сервисный класс для проектов. """
+    """ Класс-сервис для проектов. """
 
-    @staticmethod
-    async def create_charity_project(charity_project: CharityProjectCreate, session: AsyncSession):
+    def __init__(self, session: AsyncSession = Depends(get_async_session)):
+        self.session = session
+
+    async def create_charity_project(self, charity_project: CharityProjectCreate):
         """ Метод создания проекта. """
 
-        await check_name(charity_project.name, session)
-        await check_description(charity_project.description, session)
+        await check_name(charity_project.name, self.session)
+        await check_description(charity_project.description, self.session)
 
-        new_project = await project_crud.create(charity_project, session)
-        await investment_process(new_project, Donation, session)
+        new_project = await project_crud.create(charity_project, self.session)
+        await investment_process(new_project, Donation, self.session)
         return new_project
 
-    @staticmethod
-    async def update_charity_project(project_id: int, obj_in: CharityProjectUpdate, session: AsyncSession):
+    async def update_charity_project(self, project_id: int, obj_in: CharityProjectUpdate,):
         """ Метод обновления проекта. """
 
-        await check_charity_project_exists(project_id, session)
-        charity_project = await check_fully_invested(project_id, session)
+        await check_charity_project_exists(project_id, self.session)
+        charity_project = await check_fully_invested(project_id, self.session)
 
         if obj_in.name is not None:
-            await check_name(obj_in.name, session)
+            await check_name(obj_in.name, self.session)
 
-        await validate_full_amount(obj_in.dict(exclude_unset=True), charity_project, session)
+        await validate_full_amount(obj_in.dict(exclude_unset=True), charity_project, self.session)
 
-        return await project_crud.update(charity_project, obj_in, session)
+        return await project_crud.update(charity_project, obj_in, self.session)
 
-    @staticmethod
-    async def delete_charity_project(project_id: int, session: AsyncSession):
+    async def delete_charity_project(self, project_id: int,):
         """ Метод удаления проекта. """
 
-        await check_fully_and_invested_amounts(project_id, session)
-        charity_project = await check_charity_project_exists(project_id, session)
+        await check_fully_and_invested_amounts(project_id, self.session)
+        charity_project = await check_charity_project_exists(project_id, self.session)
 
-        return await project_crud.remove(charity_project, session)
+        return await project_crud.remove(charity_project, self.session)
 
 
 class DonationService:
-    """ Сервисный класс для донатов. """
+    """ Класс-сервис для донатов. """
 
-    @staticmethod
-    async def create_donation(
-        donation: DonationCreate,
-        session: AsyncSession = Depends(get_async_session),
-        user: User = Depends(current_user),
+    def __init__(
+            self,
+            session: AsyncSession = Depends(get_async_session),
+            user: User = Depends(current_user)
     ):
+        self.session = session
+        self.user = user
+
+    async def create_donation(self, donation: DonationCreate,):
         """ Метод создания доната. """
         new_donation = await donation_crud.create(
-            donation, session, user
+            donation, self.session, self.user
         )
-        await investment_process(new_donation, CharityProject, session)
+        await investment_process(new_donation, CharityProject, self.session)
 
         return new_donation
