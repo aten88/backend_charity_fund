@@ -23,7 +23,7 @@ def test_project_exist_non_donations(superuser_client, charity_project):
 def test_fully_invested_amount_for_two_projects(user_client, charity_project,
                                                 charity_project_nunchaku):
     common_asser_msg = (
-        'Создано 2 пустых проекта. Тест создает 2 пожертвования которые '
+        'Создано 2 пустых проекта. Тест создает 2 пожертвования, которые '
         'полностью покрывают инвестиции первого проекта. Второй проект должен '
         'оставаться не инвестированным.'
     )
