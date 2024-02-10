@@ -1,4 +1,5 @@
 from fastapi import Depends
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
@@ -53,6 +54,26 @@ class CharityProjectService:
         charity_project = await check_charity_project_exists(project_id, self.session)
 
         return await project_crud.remove(charity_project, self.session)
+
+    async def get_projects_by_completion_rate(self):
+        """ Метод сортировки проектов по времени закрытия. """
+        projects = await self.session.execute(
+            select(
+                CharityProject.name,
+                CharityProject.close_date,
+                CharityProject.create_date,
+                CharityProject.description).where(
+                    CharityProject.fully_invested))
+        results = []
+        for project in projects:
+            results.append(
+                {
+                    'name': project.name,
+                    'collection_time': project.close_date - project.create_date,
+                    'description': project.description
+                }
+            )
+        return sorted(results, key=lambda x: x['collection_time'])
 
 
 class DonationService:
