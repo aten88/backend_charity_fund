@@ -3,6 +3,7 @@ from datetime import datetime
 from aiogoogle import Aiogoogle
 
 from app.core.config import settings
+from app.core.constants import SHEETS_AMOUNT, ROW_LEN, COLUMNS_LEN
 
 
 FORMAT = "%Y/%m/%d %H:%M:%S"
@@ -16,10 +17,10 @@ async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
         'properties': {'title': f'Отчёт на {now_date_time}',
                        'locale': 'ru_RU'},
         'sheets': [{'properties': {'sheetType': 'GRID',
-                                   'sheetId': 0,
+                                   'sheetId': SHEETS_AMOUNT,
                                    'title': 'Лист1',
-                                   'gridProperties': {'rowCount': 100,
-                                                      'columnCount': 3}}}]
+                                   'gridProperties': {'rowCount': ROW_LEN,
+                                                      'columnCount': COLUMNS_LEN}}}]
     }
     response = await wrapper_services.as_service_account(
         service.spreadsheets.create(json=spreadsheet_body)
