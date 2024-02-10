@@ -472,7 +472,7 @@ def test_update_charity_project_same_name(superuser_client, charity_project,
     5,
 ])
 def test_update_charity_project_full_amount_smaller_already_invested(
-    superuser_client, charity_project_little_invested, full_amount
+        superuser_client, charity_project_little_invested, full_amount
 ):
     response = superuser_client.patch(
         '/charity_project/1',
@@ -532,7 +532,7 @@ def test_patch_charity_project_usual_user(user_client):
 
 
 def test_patch_charity_project_fully_invested(
-    superuser_client, small_fully_charity_project,
+        superuser_client, small_fully_charity_project,
 ):
     response = superuser_client.patch(
         '/charity_project/1', json={'full_amount': 10}
